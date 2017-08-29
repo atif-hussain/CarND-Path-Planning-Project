@@ -46,10 +46,11 @@ Sometimes based on the exact movement of surrounding cars on the road, there is 
 * Frenet.h master utility class, contains functions for finding closest/next waypoint from XY or S, and functions for converting XY to/from Frenet; 
 * splines.h borrowed standard utility 
 * main.cpp wrapper code to interact with the simulator, trimmed down, moving some code parts elsewhere for modularization. 
+* FullLap.jpg screenshot of successful run of a full lap without any incidents. 
 * generatePath.h - project rubric function to generate best path for the car; contains internal help functions too (all calculations in meters, and 0.02s units). 
 
- * makeFrenet convert sensor_fusion surrounding car' velocities from x,y to s,d coords. 
- * goodLane find the best lane and target speed for it
+-- makeFrenet convert sensor_fusion surrounding car' velocities from x,y to s,d coords. 
+-- goodLane find the best lane and target speed for it
    
   1. generatePath  part1 (line 66-79): update path start coordinates, either car/last_path_end; use both position & direction, to get 2 anchor points
   2. generatePath  part2 (line 81-99): Sense surrounding cars to get tgtSpeed & lane; use lane to pick 3 more anchor points on map
