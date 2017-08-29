@@ -1,6 +1,62 @@
+# CarND-Path-Planning-Project Submission
+This is my submission of Path Planning Project towards Self-Driving Car Engineer Nanodegree Program. 
+
+## Environment
+Program Development was done on a Intel Core i5 2.3GHz system with 12GB RAM, installed with Windows-10 64-bit OS. 
+The code was found to be performance sensitive, the numerical values used like generating 50 length path of 0.02s will need changes if code is ran on a machine with significant performance difference. 
+
+For easier debugging, significant effort was put trying to work with Visual Studio 2017 Community version. However i failed to setup required libraries for VS, and finally Bash on Windows10 was used with Makefiles setup as given in instructions. 
+
+All Debugging was performed with cout statements. The cout I/O prints created significant performance lags, so there were regularly removed after use. With large debug logs, the delay got so much that the car completed 50 instructions and waited with 0 velocity for new path input; for such debugging, path length generated was increased to adjust for log size. 
+
+## Modularized with Utility classes
+Utility classes served to modularize code to help debug & identify math errors everytime they occurred. See Point.h, Frenet.h. Standard library splines.h was also used. generatePath file & function contains the actual code for Path Planning. main.cpp interacts with the simulator. Given original main.cpp was trimmed by moving code to modules. 
+
+### Units of Measurement 
+For ease, all calculations were performed in m, m/(0.02s), m/(0.02s)^2, and angles in radians. 
+
+## Driving within lanes 
+To keep the car from driving outside of the lanes, a lane is selected to drive, and a path transitioning quickly to the lane center is created. 
+
+## Splines library 
+Splines library was used to generate Jerk minimizing trajectory. 
+
+## Jerk minimizing
+To traverse the car, Jerk minimizing trajectory (6-degree splines) were used, created from 5points - current position, previous position (based on current car angle), and 3 ahead waypoints. The speed changes along this path was also controlled. This was presumed to fit within max allowed jerk of 10m/s^3. Note: this solution approach cannot be tweaked to restrict jerk to 1m/s^3. 
+
+## Acceleration < 10m/s^2
+Tangential acceleration was restricted to 50% of this limit by control the rate of change of speed. If a car in front slows suddenly, deceleration was allowed upto 75% of this limit. Use of Jerk minimizing trajectories served to control orthogonal acceleration. 
+
+## Speed limit < 50 mph
+While generating path, traversing the splines passing through anchor points, i noticed that keeping same x-increment along car, results in speed going slightly over on turns. This was initially met by reducing target Speed to 47, but it causes car to go only at 47 for most of the path which is straight. So adjustment was applied for curves as described in project walkthrough. 
+
+## Collision
+To avoid collisions, we use sensor_fusion info to detect cars around us within [-5,+20] range along the path, and get the closest in each lane bucket. 
+
+## Lane changing 
+We select available free lanes using thumbrules based on current lane. Use current lane if free, else change lane if adjacent lane is free, else reduce speed following car in front. To prevent driving outside lanes for too long, restricted lane change if current previous path already has a lane change. 
+
+## Solution crudeness
+Sometimes based on the exact movement of surrounding cars on the road, there is collision while changing lanes, or car moves too long outside lane. This is not a robust solution catering to such safety. Based on system performance, and exact position of start, such cases might occur rarelt. Even if a driving infraction happens, just leave the car running, and it'll complete multiple rounds till a full lap is without incident and best reaches 4.32 miles
+
+
+# Code Model Documentation
+Point.h simple class with few utils 
+Frenet.h master utility class, contains functions for finding closest/next waypoint from XY or S, and functions for converting XY to/from Frenet; 
+splines.h borrowed standard utility 
+main.cpp wrapper code to interact with the simulator, trimmed down, moving some code parts elsewhere for modularization. 
+generatePath.h - project rubric function to generate best path for the car; contains internal help functions too (all calculations in meters, and 0.02s units). 
+   makeFrenet convert sensor_fusion surrounding car' velocities from x,y to s,d coords. 
+   goodLane find the best lane and target speed for it
+   generatePath  part1 (line 66-79): update path start coordinates, either car/last_path_end; use both position & direction, to get 2 anchor points
+   generatePath  part2 (line 81-99): Sense surrounding cars to get tgtSpeed & lane; use lane to pick 3 more anchor points on map
+   generatePath  part3 (line 100-140): Make spline through 5 anchorPts & pick car points along this path. To eliminate singularity, these calculations are done in car_coords (ie. transform before & after). Points on Splines are got by passing x. x is kept at intervals of speed * curving factor. Speed is incremented to goto_vel=50mph or decremented to tgt_Speed=front-car-speed in increments of max_acc. 
+
+
+
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program
-   
+
 ### Simulator.
 You can download the Term3 Simulator which contains the Path Planning Project from the [releases tab (https://github.com/udacity/self-driving-car-sim/releases).
 
