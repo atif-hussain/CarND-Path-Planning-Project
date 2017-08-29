@@ -41,16 +41,19 @@ Sometimes based on the exact movement of surrounding cars on the road, there is 
 
 
 # Code Model Documentation
-Point.h simple class with few utils 
-Frenet.h master utility class, contains functions for finding closest/next waypoint from XY or S, and functions for converting XY to/from Frenet; 
-splines.h borrowed standard utility 
-main.cpp wrapper code to interact with the simulator, trimmed down, moving some code parts elsewhere for modularization. 
-generatePath.h - project rubric function to generate best path for the car; contains internal help functions too (all calculations in meters, and 0.02s units). 
-   makeFrenet convert sensor_fusion surrounding car' velocities from x,y to s,d coords. 
-   goodLane find the best lane and target speed for it
-   generatePath  part1 (line 66-79): update path start coordinates, either car/last_path_end; use both position & direction, to get 2 anchor points
-   generatePath  part2 (line 81-99): Sense surrounding cars to get tgtSpeed & lane; use lane to pick 3 more anchor points on map
-   generatePath  part3 (line 100-140): Make spline through 5 anchorPts & pick car points along this path. To eliminate singularity, these calculations are done in car_coords (ie. transform before & after). Points on Splines are got by passing x. x is kept at intervals of speed * curving factor. Speed is incremented to goto_vel=50mph or decremented to tgt_Speed=front-car-speed in increments of max_acc. 
+
+* Point.h simple class with few utils 
+* Frenet.h master utility class, contains functions for finding closest/next waypoint from XY or S, and functions for converting XY to/from Frenet; 
+* splines.h borrowed standard utility 
+* main.cpp wrapper code to interact with the simulator, trimmed down, moving some code parts elsewhere for modularization. 
+* generatePath.h - project rubric function to generate best path for the car; contains internal help functions too (all calculations in meters, and 0.02s units). 
+
+ * makeFrenet convert sensor_fusion surrounding car' velocities from x,y to s,d coords. 
+ * goodLane find the best lane and target speed for it
+   
+  1. generatePath  part1 (line 66-79): update path start coordinates, either car/last_path_end; use both position & direction, to get 2 anchor points
+  2. generatePath  part2 (line 81-99): Sense surrounding cars to get tgtSpeed & lane; use lane to pick 3 more anchor points on map
+  3. generatePath  part3 (line 100-140): Make spline through 5 anchorPts & pick car points along this path. To eliminate singularity, these calculations are done in car_coords (ie. transform before & after). Points on Splines are got by passing x. x is kept at intervals of speed * curving factor. Speed is incremented to goto_vel=50mph or decremented to tgt_Speed=front-car-speed in increments of max_acc. 
 
 
 
